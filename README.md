@@ -1,5 +1,3 @@
-# containers_assignment
-=======
 # containers
 
 Build status:
