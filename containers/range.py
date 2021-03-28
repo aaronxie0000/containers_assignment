@@ -34,7 +34,10 @@ def range(a, b=None, c=None):
         stop = a
         curr = 0
     step = c if c is not None else 1
-    while curr < stop:
-        temp = curr
-        curr += step
-        yield temp
+    if step < 0 and stop - curr > 0:
+        return None
+    else:
+        while curr < stop:
+            temp = curr
+            curr += step
+            yield temp

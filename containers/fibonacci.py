@@ -66,6 +66,10 @@ class Fib:
     def __iter__(self):
         return FibIter(self.n)
 
+    def __repr__(self):
+        temp = self.n if self.n is not None else ''
+        return 'Fib(' + str(temp) + ')'
+
 
 class FibIter:
     '''
@@ -94,11 +98,11 @@ def fib_yield(n=None):
     This function returns a generator that computes the first n fibonacci numbers.
     If n is None, then the generator is infinite.
     '''
-    if n < 2:
-        return 1
     prev = 0
     curr = 1
-    for i in range(n):
+    i = 0
+    cus_itr = iter(int, 1) if n is None else range(n)
+    for i in cus_itr:
         temp = prev + curr
         prev = curr
         curr = temp
