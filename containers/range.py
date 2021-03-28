@@ -1,4 +1,4 @@
-def range(a, b=None, c=None):
+def range2(a, b=None, c=None):
     '''
     This function should behave exactly like the built-in range function.
     For example:
@@ -27,3 +27,14 @@ def range(a, b=None, c=None):
     Carefully written C code can be faster than the corresponding python code because it can remove some of the overhead of this automation process,
     but the resulting code is much longer and harder to read/write.
     '''
+    if b is not None:
+        curr = a
+        stop = b
+    else:
+        stop = a
+        curr = 0
+    step = c if c is not None else 1
+    while curr < stop:
+        temp = curr
+        curr += step
+        yield temp

@@ -60,12 +60,33 @@ class Fib:
     >>> list(Fib(5))
     [1, 1, 2, 3, 5]
     '''
+    def __init__(self, n=None):
+        self.n = n
+
+    def __iter__(self):
+        return FibIter(self.n)
 
 
 class FibIter:
     '''
     This is the iterator helper class for the Fib class.
     '''
+    def __init__(self, n):
+        self.n = n
+        self.prev = 0
+        self.curr = 1
+        self.i = 0
+
+    def curr(self):
+        if self.n is not None and self.n <= self.i:
+            raise StopIteration
+        else:
+            self.i += 1
+            # custom for fib
+            temp = self.prev + self.curr
+            self.prev = self.curr
+            self.curr = temp
+            return self.prev
 
 
 def fib_yield(n=None):
@@ -73,3 +94,12 @@ def fib_yield(n=None):
     This function returns a generator that computes the first n fibonacci numbers.
     If n is None, then the generator is infinite.
     '''
+    if n < 2:
+        return 1
+    prev = 0
+    curr = 1
+    for i in range(n):
+        temp = prev + curr
+        prev = curr
+        curr = temp
+        yield prev
