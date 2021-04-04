@@ -82,8 +82,8 @@ class NormalizedStr:
         The addition of two normalized strings is not guaranteed to stay normalized.
         Therefore, you must renormalize the strings after adding them together.
         '''
-        temp = str(self.text) + str(b)
-        return unicodedata.normalize(self.form, temp)
+        temp = unicodedata.normalize(self.form, self.text + str(b))
+        return NormalizedStr(temp)
 
     def __iter__(self):
         '''
