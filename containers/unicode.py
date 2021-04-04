@@ -28,7 +28,7 @@ class NormalizedStr:
         The string returned by the __repr__ function should be valid python code
         that can be substituted directly into the python interpreter to reproduce an equivalent object.
         '''
-        return 'NormalizedStr(' + str(self.text) + ", " + str(self.form) + ')'
+        return "NormalizedStr('" + str(self.text) + "', '" + str(self.form) + "')"
 
     def __str__(self):
         '''
@@ -82,7 +82,7 @@ class NormalizedStr:
         The addition of two normalized strings is not guaranteed to stay normalized.
         Therefore, you must renormalize the strings after adding them together.
         '''
-        temp = self.text + b
+        temp = str(self.text) + str(b)
         return unicodedata.normalize(self.form, temp)
 
     def __iter__(self):
@@ -102,6 +102,12 @@ class NormalizedStrIter:
         self.text = text
 
     def __next__(self):
-        self.ret = self.text[self.i]
-        self.i += 1
-        return self.ret
+        print(self.i)
+        print(len(self.text))
+        print(list(self.text))
+        if len(self.text) <= self.i:
+            raise StopIteration
+        else:
+            self.ret = self.text[self.i]
+            self.i += 1
+            return self.ret
