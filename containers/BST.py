@@ -88,14 +88,23 @@ class BST(BinaryTree):
         '''
         if self.root:
             return BST._insert(self.root, value)
+        else:
+            self.root = Node(value)
 
     @staticmethod
     def _insert(node, value):
-        BST._find(value, node)
-        if value >= self.value:
-            self.right = Node(value)
-        elif value < self.value:
-            self.left = Node(value)
+        if value < node.value:
+            if node.left is None:
+                node.left = Node(value)
+            else:
+                BST._insert(node.left, value)
+        elif value > node.value:
+            if node.right is None:
+                node.right = Node(value)
+            else:
+                BST._insert(node.right, value)
+        else:
+            pass
 
     def insert_list(self, xs):
         '''
@@ -124,8 +133,8 @@ class BST(BinaryTree):
         Implement this function.
         '''
         if self.root:
-            return BST._find(self.root)
-        return None
+            return BST._find(value, self.root)
+        return False
 
     @staticmethod
     def _find(value, node):
@@ -133,13 +142,14 @@ class BST(BinaryTree):
         FIXME:
         Implement this function.
         '''
+        if node is None:
+            return False
         if value == node.value:
             return True
         elif value > node.value:
             return BST._find(value, node.right)
         elif value < node.value:
             return BST._find(value, node.left)
-        return False
 
     def find_smallest(self):
         '''
@@ -198,6 +208,49 @@ class BST(BinaryTree):
         HINT:
         Use a recursive helper function.
         '''
+        if self.root is None:
+            return
+        elif BST.height(self) == 0:
+            if self.root.value == value:
+                self.root = None
+            else:
+                return
+        else:
+            BST._remove(self.root, value)
+
+    @staticmethod
+    def _remove(node, value, parent=None):
+        if node is None:
+            return
+            print(parent)
+            print(node)
+            print(value)
+            print('^ when none')
+        if value < node.value:
+            BST._remove(node.left, value, node)
+        elif value > node.value:
+            BST._remove(node.right, value, node)
+        elif value == node.value:
+            # Case One
+            if node.left is None and node.right is None:
+                if parent.value > node.value:
+                    parent.left = None
+                else:
+                    parent.right = None
+                return
+            # Case Two
+            elif node.left is None:
+                node = node.right
+                return
+            elif node.right is None:
+                node = node.left
+                return
+            # Case Three
+            else:
+                temp = BST._find_largest(node.left)
+                BST._remove(node.left, temp, node)
+                node.value = temp
+                return
 
     def remove_list(self, xs):
         '''
