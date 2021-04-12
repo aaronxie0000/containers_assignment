@@ -210,22 +210,21 @@ class BST(BinaryTree):
         '''
         if self.root is None:
             return
-        elif BST.height(self) == 0:
+        # !!! Why does not work if replace the below line with height==0
+        elif self.root.left is None and self.root.right is None:
+            print(value)
+            print(self.root)
             if self.root.value == value:
                 self.root = None
-            else:
-                return
+            print(self.root)
         else:
             BST._remove(self.root, value)
 
     @staticmethod
     def _remove(node, value, parent=None):
         if node is None:
+            print("None Node Error")
             return
-            print(parent)
-            print(node)
-            print(value)
-            print('^ when none')
         if value < node.value:
             BST._remove(node.left, value, node)
         elif value > node.value:
@@ -233,24 +232,39 @@ class BST(BinaryTree):
         elif value == node.value:
             # Case One
             if node.left is None and node.right is None:
+                # Case where is parent handled by height == 0 before _remove() call
                 if parent.value > node.value:
                     parent.left = None
                 else:
                     parent.right = None
-                return
             # Case Two
             elif node.left is None:
+                # If is root
+                if parent is None:
+                    temp = BST._find_smallest(node.right)
+                    BST._remove(node.right, temp, node)
+                    node.value = temp
+                elif parent.value > node.value:
+                    parent.left = node.right
+                else:
+                    parent.right = node.right
                 node = node.right
-                return
             elif node.right is None:
-                node = node.left
-                return
+                if parent is None:
+                    temp = BST._find_largest(node.left)
+                    BST._remove(node.left, temp, node)
+                    node.value = temp
+                elif parent.value > node.value:
+                    parent.left = node.left
+                    node = node.left
+                else:
+                    parent.right = node.left
+                    node = node.left
             # Case Three
             else:
                 temp = BST._find_largest(node.left)
                 BST._remove(node.left, temp, node)
                 node.value = temp
-                return
 
     def remove_list(self, xs):
         '''
