@@ -221,8 +221,8 @@ class BinaryTree():
         right_height = -1
         if node is None:
             return -1
-        if node and node.left is not None:
+        if node.left is not None:
             left_height = BinaryTree._height(node.left)
-        if node and node.left is not None:
+        if node.right is not None:
             right_height = BinaryTree._height(node.right)
         return 1 + max(left_height, right_height)

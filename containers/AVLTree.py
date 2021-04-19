@@ -8,7 +8,7 @@ from containers.BinaryTree import BinaryTree, Node
 from containers.BST import BST
 
 
-class AVLTree():
+class AVLTree(BST):
     '''
     FIXME:
     AVLTree is currently not a subclass of BST.
@@ -21,6 +21,9 @@ class AVLTree():
         FIXME:
         Implement this function.
         '''
+        super().__init__()
+        if xs is not None:
+            self.insert_list(xs)
 
     def balance_factor(self):
         '''
@@ -41,6 +44,8 @@ class AVLTree():
         '''
         Returns True if the avl tree satisfies that all nodes have a balance factor in [-1,0,1].
         '''
+        if self.root is None:
+            return True
         return AVLTree._is_avl_satisfied(self.root)
 
     @staticmethod
@@ -49,6 +54,14 @@ class AVLTree():
         FIXME:
         Implement this function.
         '''
+        ret = True
+        ret &= BST._is_bst_satisfied(node)
+        ret &= AVLTree._balance_factor(node) in [-1, 0, 1]
+        if node.right:
+            ret &= AVLTree._balance_factor(node.right) in [-1, 0, 1]
+        if node.left:
+            ret &= AVLTree._balance_factor(node.left) in [-1, 0, 1]
+        return ret
 
     @staticmethod
     def _left_rotate(node):
@@ -61,6 +74,7 @@ class AVLTree():
         The textbook's class hierarchy for their AVL tree code is fairly different from our class hierarchy,
         however, so you will have to adapt their code.
         '''
+
 
     @staticmethod
     def _right_rotate(node):
