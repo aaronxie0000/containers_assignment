@@ -6,6 +6,7 @@ but there are fewer of them.
 
 from containers.BinaryTree import BinaryTree, Node
 from containers.BST import BST
+import copy
 
 
 class AVLTree(BST):
@@ -66,6 +67,8 @@ class AVLTree(BST):
     @staticmethod
     def _left_rotate(node):
         '''
+        returns a Node() type
+
         FIXME:
         Implement this function.
 
@@ -74,6 +77,13 @@ class AVLTree(BST):
         The textbook's class hierarchy for their AVL tree code is fairly different from our class hierarchy,
         however, so you will have to adapt their code.
         '''
+        temp = copy.deepcopy(node)
+        newRoot = copy.deepcopy(temp.right)
+        tempNode = temp.right.left
+        newRoot.right = temp.right.right
+        temp.right = tempNode
+        newRoot.left = temp
+        return newRoot
 
 
     @staticmethod
@@ -87,6 +97,17 @@ class AVLTree(BST):
         The textbook's class hierarchy for their AVL tree code is fairly different from our class hierarchy,
         however, so you will have to adapt their code.
         '''
+        temp = copy.deepcopy(node)
+        newRoot = copy.deepcopy(temp.left)
+        tempNode = temp.left.right
+        newRoot.left = temp.left.left
+        temp.left = tempNode
+        newRoot.right = temp
+        return newRoot
+    
+    def insert_list(self, xs):
+        for x in xs:
+            self.insert(x)
 
     def insert(self, value):
         '''
@@ -103,6 +124,29 @@ class AVLTree(BST):
         The code should look very similar to the code for your insert function for the BST,
         but it will also call the left and right rebalancing functions.
         '''
+        # Not working yet
+        return
+        if self.root:
+            AVLTree._insert(self.root, value.root)
+        else:
+            self.root = Node(value)
+
+    @staticmethod
+    def _insert(node, value, parent):
+        if value < node.value:
+            if node.left is None:
+                node.left = Node(value)
+                AVLTree._rebalance(parent)
+            else:
+                AVLTree._insert(node.left, value, node)
+        elif value > node.value:
+            if node.right is None:
+                node.right = Node(value)
+                AVLTree._rebalance(parent)
+            else:
+                AVLTree._insert(node.right, value, node)
+        else:
+            pass
 
     @staticmethod
     def _rebalance(node):
@@ -112,3 +156,15 @@ class AVLTree(BST):
         But both the insert function needs the rebalancing code,
         so I recommend including that code here.
         '''
+        if AVLTree._balance_factor(node) < 0:
+            if AVLTree._balance_factor(node.right) > 0:
+                AVLTree._right_rotate(node.right)
+                AVLTree._left_rotate(node)
+            else:
+                AVLTree._left_rotate(node)
+        elif AVLTree._balance_factor(node) > 0:
+            if AVLTree._balance_factor(node.left) < 0:
+                AVLTree._left_rotate(node.left)
+                AVLTree._right_rotate(node)
+            else:
+                AVLTree._right_rotate(node)

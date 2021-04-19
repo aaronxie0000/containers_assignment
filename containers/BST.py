@@ -104,7 +104,7 @@ class BST(BinaryTree):
         Create a staticmethod helper function following the pattern of _is_bst_satisfied.
         '''
         if self.root:
-            return BST._insert(self.root, value)
+            BST._insert(self.root, value)
         else:
             self.root = Node(value)
 
