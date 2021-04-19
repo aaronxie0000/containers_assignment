@@ -78,13 +78,12 @@ class AVLTree(BST):
         however, so you will have to adapt their code.
         '''
         temp = copy.deepcopy(node)
-        newRoot = copy.deepcopy(temp.right)
-        tempNode = temp.right.left
-        newRoot.right = temp.right.right
-        temp.right = tempNode
-        newRoot.left = temp
-        return newRoot
-
+        new_root = copy.deepcopy(temp.right)
+        temp_node = temp.right.left
+        new_root.right = temp.right.right
+        temp.right = temp_node
+        new_root.left = temp
+        return new_root
 
     @staticmethod
     def _right_rotate(node):
@@ -98,13 +97,13 @@ class AVLTree(BST):
         however, so you will have to adapt their code.
         '''
         temp = copy.deepcopy(node)
-        newRoot = copy.deepcopy(temp.left)
-        tempNode = temp.left.right
-        newRoot.left = temp.left.left
-        temp.left = tempNode
-        newRoot.right = temp
-        return newRoot
-    
+        new_root = copy.deepcopy(temp.left)
+        temp_node = temp.left.right
+        new_root.left = temp.left.left
+        temp.left = temp_node
+        new_root.right = temp
+        return new_root
+
     def insert_list(self, xs):
         for x in xs:
             self.insert(x)
