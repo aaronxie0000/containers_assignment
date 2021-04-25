@@ -10,7 +10,7 @@ This homework is using an explicit tree implementation to help you get more prac
 from containers.BinaryTree import BinaryTree, Node
 
 
-class Heap():
+class Heap(BinaryTree):
     '''
     FIXME:
     Heap is currently not a subclass of BinaryTree.
@@ -24,6 +24,10 @@ class Heap():
         If xs is a list (i.e. xs is not None),
         then each element of xs needs to be inserted into the Heap.
         '''
+        super().__init__()
+        self.node_count = 0
+        if xs is not None:
+            self.insert_list(xs)
 
     def __repr__(self):
         '''
@@ -59,6 +63,16 @@ class Heap():
         FIXME:
         Implement this method.
         '''
+        ret = True
+        if node.right and node.left is None:
+            ret &= False
+        if node.right:
+            ret &= node.right.value >= node.value
+            ret &= Heap._is_heap_satisfied(node.right) 
+        if node.left:
+            ret &= node.left.value >= node.value
+            ret &= Heap._is_heap_satisfied(node.left)
+        return ret
 
     def insert(self, value):
         '''
@@ -79,6 +93,51 @@ class Heap():
         Create a @staticmethod helper function,
         following the same pattern used in the BST and AVLTree insert functions.
         '''
+        temp = 1 + self.node_count
+        binary = list('{0:b}'.format(temp))
+        self.node_count += 1
+        binary.pop(0) #ignore first non-zero
+        if self.root:
+            Heap._insert(self.root, value, binary)
+            self.root = Heap._fix(self.root)
+        else:
+            self.root = Node(value)
+
+    @staticmethod
+    def _insert(node, value, binary):
+        if binary[0] == '0':
+            if node.left is None:
+                node.left = Node(value)
+            else:
+                binary.pop(0)
+                Heap._insert(node.left, value, binary)
+        elif binary[0] == '1':
+            if node.right is None:
+                node.right = Node(value)
+            else:
+                binary.pop(0)
+                Heap._insert(node.right, value, binary)
+
+    @staticmethod
+    def _fix(node, parent=None):
+        if Heap._is_heap_satisfied(node):
+            return node
+        if node.left and not Heap._is_heap_satisfied(node.left):
+            node.left = Heap._fix(node.left, node)
+        if node.right and not Heap._is_heap_satisfied(node.right):
+            node.right = Heap._fix(node.right, node)
+        if not Heap._is_heap_satisfied(node):
+            if node.left and node.left.value < node.value:
+                temp = node.value
+                node.value = node.left.value
+                node.left.value = temp
+            if node.right and node.right.value < node.value:
+                temp = node.value
+                node.value = node.right.value
+                node.right.value = temp
+            return node
+        return node
+
 
     def insert_list(self, xs):
         '''
@@ -87,6 +146,8 @@ class Heap():
         FIXME:
         Implement this function.
         '''
+        for x in xs:
+            self.insert(x)
 
     def find_smallest(self):
         '''
@@ -95,6 +156,7 @@ class Heap():
         FIXME:
         Implement this function.
         '''
+        return self.root
 
     def remove_min(self):
         '''
