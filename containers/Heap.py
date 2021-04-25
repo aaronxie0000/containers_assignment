@@ -68,7 +68,7 @@ class Heap(BinaryTree):
             ret &= False
         if node.right:
             ret &= node.right.value >= node.value
-            ret &= Heap._is_heap_satisfied(node.right) 
+            ret &= Heap._is_heap_satisfied(node.right)
         if node.left:
             ret &= node.left.value >= node.value
             ret &= Heap._is_heap_satisfied(node.left)
@@ -96,10 +96,10 @@ class Heap(BinaryTree):
         temp = 1 + self.node_count
         binary = list('{0:b}'.format(temp))
         self.node_count += 1
-        binary.pop(0) #ignore first non-zero
+        binary.pop(0)  # ignore first non-zero
         if self.root:
             Heap._insert(self.root, value, binary)
-            self.root = Heap._fix(self.root)
+            Heap._trickle_up(self.root)
         else:
             self.root = Node(value)
 
@@ -119,13 +119,11 @@ class Heap(BinaryTree):
                 Heap._insert(node.right, value, binary)
 
     @staticmethod
-    def _fix(node, parent=None):
-        if Heap._is_heap_satisfied(node):
-            return node
+    def _trickle_up(node, parent=None):
         if node.left and not Heap._is_heap_satisfied(node.left):
-            node.left = Heap._fix(node.left, node)
+            Heap._trickle_up(node.left, node)
         if node.right and not Heap._is_heap_satisfied(node.right):
-            node.right = Heap._fix(node.right, node)
+            Heap._trickle_up(node.right, node)
         if not Heap._is_heap_satisfied(node):
             if node.left and node.left.value < node.value:
                 temp = node.value
@@ -135,9 +133,6 @@ class Heap(BinaryTree):
                 temp = node.value
                 node.value = node.right.value
                 node.right.value = temp
-            return node
-        return node
-
 
     def insert_list(self, xs):
         '''
@@ -156,7 +151,7 @@ class Heap(BinaryTree):
         FIXME:
         Implement this function.
         '''
-        return self.root
+        return self.root.value
 
     def remove_min(self):
         '''
@@ -177,3 +172,45 @@ class Heap(BinaryTree):
         It's possible to do it with only a single helper (or no helper at all),
         but I personally found dividing up the code into two made the most sense.
         '''
+        binary = list('{0:b}'.format(self.node_count))
+        self.node_count -= 1
+        binary.pop(0)
+        if len(binary) >= 1:
+            self.root.value = Heap._remove_btm(self.root, binary)
+            Heap._trickle_down(self.root)
+        else:
+            self.root = None
+
+    @staticmethod
+    def _remove_btm(node, binary):
+        if len(binary) == 1:
+            if binary[0] == '0':
+                temp = node.left.value
+                node.left = None
+                return temp
+            elif binary[0] == '1':
+                temp = node.right.value
+                node.right = None
+                return temp
+        else:
+            if binary[0] == '0':
+                binary.pop(0)
+                return Heap._remove_btm(node.left, binary)
+            elif binary[0] == '1':
+                binary.pop(0)
+                return Heap._remove_btm(node.right, binary)
+
+    @staticmethod
+    def _trickle_down(node):
+        if not Heap._is_heap_satisfied(node):
+            if node.right is None and node.left is not None:
+                node.value, node.left.value = node.left.value, node.value
+            elif node.left.value < node.value and node.left.value < node.right.value:
+                node.value, node.left.value = node.left.value, node.value
+            elif node.right.value < node.value and node.right.value <= node.left.value:
+                node.value, node.right.value = node.right.value, node.value
+        # Recursive cases:
+        if node.right and not Heap._is_heap_satisfied(node.right):
+            Heap._trickle_down(node.right)
+        if node.left and not Heap._is_heap_satisfied(node.left):
+            Heap._trickle_down(node.left)
